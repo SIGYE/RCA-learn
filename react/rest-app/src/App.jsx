@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './index.css';
 import Login from './components/Login';
 import SignUp from './components/SignUp';
+import AddForm from './components/AddForm';
 
 function App() {
   return (
@@ -12,6 +13,9 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
       </Routes>
     </Router>
+    // <>
+    // <AddForm/>
+    // </>
   );
 }
 
