@@ -10,7 +10,9 @@ const Login = () => {
               <form className='space-y-6 '>
                 <input type="email" placeholder='Enter Email or Username' className='w-full border border-gray-400 rounded-lg px-5 py-3 text-gray-600' />
                 <input type="password" id='password' placeholder='Enter Password' className='w-full border border-gray-600 rounded-lg px-5 py-3 text-gray-600' />
-                <button className='px-5 py-3 rounded-lg bg-blue-600 top-5 hover:bg-blue-500 text-white items-center justify-center'>Login</button>
+                <div className='flex justify-center'>
+                <button className='px-5 py-3 rounded-lg bg-blue-600 top-5 hover:bg-blue-500 text-white items-center'>Login</button>
+                </div>
               </form>
             </div>
             <p className='text-sm text-center justify-center'>
