@@ -36,8 +36,10 @@ const Dashboard = () => {
                     </tr>
                 ))}
             </tbody>
-
         </table>
+        <div className='flex justify-center py-5'>
+        <Link to="/addForm" className='px-5 py-3 rounded-lg bg-blue-500 text-white items-center'>Add Employee</Link>
+        </div>
     </div>
   )
 }
