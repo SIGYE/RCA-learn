@@ -8,18 +8,14 @@ import Dashboard from './components/Dashboard';
 
 function App() {
   return (
-    // <Router>
-    //   <Routes>
-    //     <Route path="/" element={<Login />} />
-    //     <Route path="/signup" element={<SignUp />} />
-    //   </Routes>
-    // </Router>
-    // <>
-    // <AddForm/>
-    // </>
-    <>
-    <Dashboard/>
-    </>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path='/dashboard' element={<Dashboard/>}/>
+      </Routes>
+    </Router>
+ 
   );
 }
 

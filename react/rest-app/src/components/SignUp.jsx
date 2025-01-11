@@ -13,7 +13,7 @@ const SignUp = () => {
                     <input type="password" id="password" placeholder='Enter Password' className='w-full border border-gray-400 rounded-lg text-gray-600 px-5 py-3'/>
                     <input type="password" id="password" placeholder='Confirm Password' className='w-full border border-gray-400 rounded-lg text-gray-600 px-5 py-3'/>
                     <div className='flex justify-center'>
-                    <button className='px-3 py-2 bg-blue-600 font-semibold text-white rounded-lg top-5'>Sign up</button>
+                        <Link to="/dashboard" className='px-5 py-2 bg-blue-500  text-white rounded-lg items-center'>Sign Up</Link>
                     </div>
                 </form>
             </div>
