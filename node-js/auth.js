@@ -96,9 +96,8 @@ app.post("/login",
 
 mongoose.connect("mongodb://localhost:27017/testdb")
                  .then(() =>{
-                    let PORT = 3000
-                  app.listen(PORT, () =>{
-                    console.log(`App is listening on ${PORT}`);
+                  app.listen(3000, () =>{
+                    console.log(`App is listening on 3000`);
                   });
                  })
                  .catch(
