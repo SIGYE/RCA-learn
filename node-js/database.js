@@ -1,11 +1,11 @@
-const { Sequelize } = require(sequelize);
+const { Sequelize } = require("sequelize");
 
 const sequelize = new Sequelize("testdb", "root", "postgres",{
     host: "localhost",
-    dialect: "postgresql"
+    dialect: "postgres"
 });
 
-sequalize. authenticate().then(() =>console.log("connected to the database"))
+sequelize. authenticate().then(() =>console.log("connected to the database"))
                                         .catch((err)=>console.error("Unable to connect to the database:", err));
 
 module.exports = sequelize;                                        
