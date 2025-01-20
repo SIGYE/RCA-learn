@@ -1,4 +1,3 @@
-const { type } = require("os");
 const Sequelize = require("sequelize");
 const sequelize = new Sequelize({
     dialect: "postgres",
@@ -37,5 +36,37 @@ const Employee = sequelize.define(
             allowNullable: false,
             
         }
+    },
+
+    {
+        timeStamp: false,
+        indexes: [
+            {
+                name: "employee_name",
+                fields: ["name"]
+            },
+            {
+                name: "employee_email",
+                fields: ["email"]
+            },
+            {
+                name: "employee_phoneNumber",
+                fields: ["phoneNumber"]
+            },
+            {
+                name: "employee_role",
+                fields: ["role"]
+            },
+        ],
     }
-)
+);
+
+Employee.sync({alter: true})
+                .then(()=>{
+                    console.log("Database table created successfully");
+                })
+                .catch((err)=>{
+                    console.log("Error in creating database table", err);
+                })
+
+module.exports = Employee;
