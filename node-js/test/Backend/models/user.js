@@ -11,6 +11,12 @@ const sequelize = new Sequalize({
 const User = sequelize.define(
     "users",
     {
+        id: {
+            type: Sequelize.INTEGER,
+            autoIncrement: true,
+            primaryKey: true,
+            allowNullable: false,
+        },
         name: {
             type : Sequelize.STRING,
             allowNullable: false,

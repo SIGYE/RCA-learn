@@ -10,6 +10,12 @@ const sequelize = new Sequelize({
 const Employee = sequelize.define(
     "employees",
     {
+        id:{
+            type: Sequelize.INTEGER,
+            autoIncrement: true,
+            primaryKey: true,
+            allowNullable: false
+        },
         name: {
             type: Sequelize.STRING,
             allowNullable: false,

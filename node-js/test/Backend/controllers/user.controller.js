@@ -1,5 +1,7 @@
 const { Pool } = require("pg");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const user = require("../models/user");
 
 
 const pool = new Pool({
@@ -55,15 +57,92 @@ const userLogin = async(req,res)=>{
                 return res.status(500).json({message:"Error comparing passwords"});
             }
             if(!isMatch){
-                return res.status(401).json({message:""})
+                return res.status(401).json({message:"Invalid email or password"});
             }
-        } 
-
-        )
+            const token = jwt.sign({
+                id: user.id,
+                name : user.name,
+                email: user.email,
+                password: user.password
+            },
+            process.env.JWT_SECRET_KEY,
+            {expiresIn: "1h"}
+        );
+        res.status(200).json({token});
+        });
     }
 
-    );
-    
-    
+    )};
 
+const getAllUsers= async(req,res)=>{
+    try{
+        const data = await User.findAll({
+            attributes: ["id", "name", "email"]
+        });
+        console.log(data);
+        res.json(data);
+    } catch(error){
+        console.error(error);
+        res.status(500).json({message: "Server Error!"});
+    }
+};
+
+const getUsersById = async(req,res)=>{
+    try{
+        const id = req.params;
+        const user = await User.findOne(id);
+        console.log(user);
+        if(user){
+            return res.json(user);
+        } else{
+            return res.status(401).json({message: "User not found"});
+        }
+    }  catch(error){
+        console.log(error);
+        res.status(500).json({message: "Server Error"});
+    }
+};
+
+const updateUser = async(req,res)=>{
+    try{
+    const { id } = req.params;
+    const {name, email} = req.body;
+    const user = await User.findByPk(id);
+    if(user){
+        await user.update({
+            name,
+            email
+        });
+        return res.status(200).json({message : "Successfully Updated User"});
+    } else{
+        return res.status(401).json({message: "Error occurred"});
+    }
+} catch(error){
+    console.log(error);
+    return res.status(500).json({message : "Server Error"});
 }
+};
+
+const deleteUser = async(req,res)=>{
+    try{
+        const { id } = req.params;
+        const user = await User.findByPk(id);
+        if(user){
+            await user.destroy();
+        return res.status(200).json({message : "Successfully Deleted User"});
+        } else{
+        return res.status(401).json({message : "Error occurred"});
+        }
+    } catch(error) {
+        console.error(error);
+        return res.status(500).json({message : "Server error"});
+    }
+};
+
+module.exports = {
+    createUser,
+    getAllUsers,
+    getUsersById,
+    updateUser,
+    deleteUser
+};
