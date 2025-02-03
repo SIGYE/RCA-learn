@@ -1,7 +1,7 @@
 const { Pool } = require("pg");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const user = require("../models/user");
+const User = require("../models/user");
 const { CreateUser } = require("../schemas/UserValidationSchema");
 
 
@@ -16,7 +16,7 @@ const pool = new Pool({
 const createUser = async (req, res) => {
     try {
         const { name, email, password, role } = req.body;
-        const value = await createUser.validateAsync(req.body);
+        const value = await CreateUser.validateAsync(req.body);
 
         const passHashed = await bcrypt.hash(password, 10);
         console.log(passHashed);
@@ -145,5 +145,6 @@ module.exports = {
     getAllUsers,
     getUsersById,
     updateUser,
-    deleteUser
+    deleteUser,
+    userLogin
 };
