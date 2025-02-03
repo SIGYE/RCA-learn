@@ -2,6 +2,7 @@ const { Pool } = require("pg");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const user = require("../models/user");
+const { CreateUser } = require("../schemas/UserValidationSchema");
 
 
 const pool = new Pool({

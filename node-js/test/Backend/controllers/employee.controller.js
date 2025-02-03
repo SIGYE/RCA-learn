@@ -2,6 +2,7 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const Employee = require("../models/employee");
 const jwt = require("jsonwebtoken");
+const { CreateEmployee } = require("../schemas/EmployeeValidationSchema")
 
 const pool = new Pool({
     user: "postgres",
