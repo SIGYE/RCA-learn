@@ -8,4 +8,4 @@ const isAuthenticated = require("../middlewares/isAuthenticated");
 router.use("/employees", isAuthenticated, employeeRoutes);
 router.use("/users",userRoutes);
 
-module.exports = router
+module.exports = router;
