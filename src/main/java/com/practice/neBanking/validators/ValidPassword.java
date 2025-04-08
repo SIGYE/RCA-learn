@@ -1,0 +1,17 @@
+package com.practice.neBanking.validators;
+
+import jakarta.validation.Constraint;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+@Documented
+@Constraint(validatedBy = PasswordConstraintValidator.class)
+@Target({ TYPE, FIELD, ANNOTATION_TYPE })
+@Retention(RUNTIME)
+public @interface ValidPassword {
+    String message () default "Invalid password";
+    Class<?>[] groups() default{};
+    Class<? extends Payload>[] payload() default {};
+}
