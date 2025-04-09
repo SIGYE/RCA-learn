@@ -10,8 +10,10 @@ import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import com.practice.neBanking.enums.ECustomerStatus;
+import com.practice.neBanking.audits.TimestampAudit;
 
 @Getter
 @Setter
@@ -20,7 +22,7 @@ import com.practice.neBanking.enums.ECustomerStatus;
 @AllArgsConstructor
 @Entity
 @Table(name = "customers", uniqueConstraints = {@UniqueConstraint(columnNames = {"email"}), @UniqueConstraint(columnNames = {"mobile"})})
-public class Customer {
+public class Customer extends TimestampAudit{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -71,7 +73,7 @@ public class Customer {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"),inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private <Role>roles = new HashSet<>();
+    private Set<Role> roles = new HashSet<>();
 
     public String getFullName(){
         return this.firstName+" "+this.lastName;
