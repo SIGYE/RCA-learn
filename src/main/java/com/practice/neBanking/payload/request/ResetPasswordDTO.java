@@ -2,6 +2,7 @@ package com.practice.neBanking.payload.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
+import com.practice.neBanking.validators.ValidPassword;
 
 @Getter
 public class ResetPasswordDTO {
