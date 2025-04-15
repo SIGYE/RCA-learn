@@ -2,10 +2,13 @@ package com.practice.neBanking.controllers;
 
 import com.practice.neBanking.enums.ERole;
 import com.practice.neBanking.models.Customer;
+import com.practice.neBanking.models.File;
 import com.practice.neBanking.payload.response.ApiResponse;
+import com.practice.neBanking.services.ICustomerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +16,7 @@ import com.practice.neBanking.repositories.IRoleRepository;
 import com.practice.neBanking.models.Role;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -76,6 +80,48 @@ public class CustomerController {
         do{
             accountCode = Utility.generatedCode();
         } while(this.customerService.findByAccountCode(accountCode).isPresent());
+        customer.setEmail(dto.getEmail());
+        customer.setFirstName(dto.getFirstName());
+        customer.setLastName(dto.getLastName());
+        customer.setMobile(dto.getMobile());
+        customer.setPassword(dto.getPassword);
+        customer.setDob(dto.getDob);
+        customer.setBalance(dto.getBalance());
+        customer.setAccount(dto.getAccount());
+        customer.setRoles(dto.getRoles());
+
+        Customer entity = this.customerService.create(customer);
+        return ResponseEntity.ok(ApiResponse.success("Customer created successfully", entity));
     }
 
+    @PutMapping(path = "/updated-profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse> uploadProfile(@RequestParam("file")MultipartFile document){
+        if(!Utility.isImageFile(document)){
+            throw new BadRequestExceptiom("Only images are allowed!");
+        }
+        Customer customer = this.customerService.getLoggedInCustomer();
+        File file = this.fileService.create(document, customerProfilesDirectory);
+        return ResponseEntity.ok(ApiResponse.success("Proile saved successfully", updated));
+    }
+
+    @PatchMapping(path = "/remove-profile")
+    public ResponseEntity<ApiResponse> removeProfile(){
+        Customer customer = this.customerService.getLoggedInCustomer();
+        Customer updated = this.customerService.removeProfileImgae(customer.getId());
+        return ResponseEntity.ok(ApiResponse.success("Profile removed successfully", updated));
+    }
+
+    @DeleteMapping(path = "/delete")
+    public  ResponseEntity<ApiResponse> deleteMyAccount(){
+        Customer customer = this.customerService.getLoggedInCustomer();
+        this.customerService.delete(customer.getId());
+        return ResponseEntity.ok(ApiResponse.success("Account deleted successfully"));
+    }
+
+    @DeleteMapping(path = "/delete/{id}")
+    public  ResponseEntity<ApiResponse> deleteByAdmin(@PathVariable(value = "id") UUID id){
+        this.customerService.delete(id);
+        return ResponseEntity.ok(ApiResponse.success("Account deleted successfully"));
+
+    }
 }
