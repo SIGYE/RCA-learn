@@ -42,7 +42,7 @@ public class Customer extends TimestampAudit{
     private String mobile;
 
     @Column(name = "balance")
-    private String balance;
+    private double balance;
 
     @Column(name = "account")
     private String account;

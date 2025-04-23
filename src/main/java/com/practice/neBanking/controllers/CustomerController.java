@@ -7,6 +7,8 @@ import com.practice.neBanking.payload.response.ApiResponse;
 import com.practice.neBanking.services.ICustomerService;
 import com.practice.neBanking.payload.request.CreateCustomerDTO;
 import com.practice.neBanking.payload.request.UpdateCustomerDTO;
+import com.practice.neBanking.services.ICustomerService;
+import com.practice.neBanking.services.IFileService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
@@ -20,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collections;
 import java.util.UUID;
 
 
@@ -43,7 +46,7 @@ public class CustomerController {
 
     @PutMapping(path = "/update")
     public ResponseEntity<ApiResponse> update(@RequestBody UpdateCustomerDTO dto){
-        Customer updated = this.customerService.update(this.customerService.getLoggeInCustomer().getId(), dto);
+        Customer updated = this.customerService.update(this.customerService.getLoggedInCustomer().getId(), dto);
         return ResponseEntity.ok(ApiResponse.success("Customer updated successfully", updated));
     }
 
@@ -53,7 +56,7 @@ public class CustomerController {
             @RequestParam(value = "size", defaultValue = Constants.DEFAULT_PAGE_SIZE) int limit
     ){
         Pageable pageable = Pageable.ofSize(limit).withPage(page);
-        return ResponseEntity.ok(ApiResponse.success("Users fetched successfully", this.customerService.getALl(pageable)));
+        return ResponseEntity.ok(ApiResponse.success("Users fetched successfully", this.customerService.getAll(pageable)));
     }
 
     @GetMapping("/search")
@@ -86,11 +89,11 @@ public class CustomerController {
         customer.setFirstName(dto.getFirstName());
         customer.setLastName(dto.getLastName());
         customer.setMobile(dto.getMobile());
-        customer.setPassword(dto.getPassword);
-        customer.setDob(dto.getDob);
+        customer.setPassword(dto.getPassword());
+        customer.setDob(dto.getDob());
         customer.setBalance(dto.getBalance());
-        customer.setAccount(dto.getAccount());
-        customer.setRoles(dto.getRoles());
+        customer.setAccount(accountCode);
+        customer.setRoles(Collections.singleton(role));
 
         Customer entity = this.customerService.create(customer);
         return ResponseEntity.ok(ApiResponse.success("Customer created successfully", entity));
@@ -109,7 +112,7 @@ public class CustomerController {
     @PatchMapping(path = "/remove-profile")
     public ResponseEntity<ApiResponse> removeProfile(){
         Customer customer = this.customerService.getLoggedInCustomer();
-        Customer updated = this.customerService.removeProfileImgae(customer.getId());
+        Customer updated = this.customerService.removeProfileImage(customer.getId());
         return ResponseEntity.ok(ApiResponse.success("Profile removed successfully", updated));
     }
 
