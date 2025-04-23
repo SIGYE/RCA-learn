@@ -12,9 +12,10 @@ import com.practice.neBanking.services.ICustomerService;
 import com.practice.neBanking.exceptions.BadRequestException;
 import com.practice.neBanking.utils.Constants;
 import com.practice.neBanking.services.IFileService;
+import com.practice.neBanking.utils.Utility;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -65,7 +66,7 @@ public class CustomerController {
     @GetMapping("/search")
     public ResponseEntity<ApiResponse> search(
             @RequestParam(value = "page", defaultValue = Constants.DEFAULT_PAGE_NUMBER) int page,
-            @RequestParam(value = "size", defaultValue = Constants.DEFAULT_PAGE_SIZE) int size,
+            @RequestParam(value = "size", defaultValue = Constants.DEFAULT_PAGE_SIZE) int limit,
             @RequestParam(value = "q") String q
     ){
         Pageable pageable = Pageable.ofSize(limit).withPage(page);
@@ -74,7 +75,7 @@ public class CustomerController {
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<ApiResponse> getById(@PathVariable(value = "id")UUID id){
-        return ResponseEntity.ok(ApiResponse.success("Users fetched successfully", this.customerService.getBYId()));
+        return ResponseEntity.ok(ApiResponse.success("Users fetched successfully", this.customerService.getById(id)));
     }
 
     @PostMapping("/register")
@@ -86,7 +87,7 @@ public class CustomerController {
         String accountCode;
 
         do{
-            accountCode = Utility.generatedCode();
+            accountCode = Utility.generateCode();
         } while(this.customerService.findByAccountCode(accountCode).isPresent());
         customer.setEmail(dto.getEmail());
         customer.setFirstName(dto.getFirstName());
@@ -105,10 +106,11 @@ public class CustomerController {
     @PutMapping(path = "/updated-profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse> uploadProfile(@RequestParam("file")MultipartFile document){
         if(!Utility.isImageFile(document)){
-            throw new BadRequestExceptiom("Only images are allowed!");
+            throw new BadRequestException("Only images are allowed!");
         }
         Customer customer = this.customerService.getLoggedInCustomer();
         File file = this.fileService.create(document, customerProfilesDirectory);
+        Customer updated = this.customerService.changeProfileImage(customer.getId(), file);
         return ResponseEntity.ok(ApiResponse.success("Proile saved successfully", updated));
     }
 

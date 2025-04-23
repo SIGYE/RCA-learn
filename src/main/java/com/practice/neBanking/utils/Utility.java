@@ -1,8 +1,17 @@
 package com.practice.neBanking.utils;
 
-import java.util.Random;
+import com.practice.neBanking.models.Customer;
 
-public interface Utility {
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.MediaType;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.security.SecureRandom;
+import java.util.Random;
+import org.slf4j.Logger;
+
+public class Utility {
     private static final String ALPHANUM = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final String NUM = "0123456789";
     private static final String ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
