@@ -6,6 +6,7 @@ import com.practice.neBanking.models.File;
 import com.practice.neBanking.payload.response.ApiResponse;
 import com.practice.neBanking.services.ICustomerService;
 import com.practice.neBanking.payload.request.CreateCustomerDTO;
+import com.practice.neBanking.payload.request.UpdateCustomerDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;

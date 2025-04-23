@@ -1,6 +1,7 @@
 package com.practice.neBanking.services;
 import com.practice.neBanking.models.Customer;
 import com.practice.neBanking.models.File;
+import com.practice.neBanking.payload.request.UpdateCustomerDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
