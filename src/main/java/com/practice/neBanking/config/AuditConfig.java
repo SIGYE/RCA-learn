@@ -17,7 +17,7 @@ import java.util.UUID;
 public class AuditConfig {
     @Bean
     public AuditorAware<UUID> auditProvider(){
-        return new SpringSecurityAuditAwareImpl;
+        return new SpringSecurityAuditAwareImpl();
     }
 }
 
