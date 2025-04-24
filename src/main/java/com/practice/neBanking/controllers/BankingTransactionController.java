@@ -4,6 +4,11 @@ import com.practice.neBanking.models.Customer;
 import com.practice.neBanking.payload.response.ApiResponse;
 import com.practice.neBanking.services.ICustomerService;
 import com.practice.neBanking.utils.Constants;
+import com.practice.neBanking.services.IBankingTransactionService;
+import com.practice.neBanking.standalone.ExcelService;
+import com.practice.neBanking.enums.ETransactionType;
+import com.practice.neBanking.payload.request.CreateTransactionDTO;
+import com.practice.neBanking.models.BankingTransaction;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -61,8 +66,8 @@ public class BankingTransactionController {
 
     @GetMapping("/download/{customerId}")
     private ResponseEntity<byte[]> downloadExcel(@PathVariable UUID customerId)throws IOException {
-        List<String> fileHeaders = Arrays.asList("#", "Customer Names", "Transaction Type", "Amount", "Your Account", "Receiver Account", "Transaction Type");
-        List<BankingTransaction> transactions = this.bankingTransactionService.getAlltransactionsByCustomer(customerId);
+        List<String> fileHeaders = Arrays.asList("#", "Customer Names", "Transaction Type", "Amount", "Your Account", "Receiver Account", "Transaction Date");
+        List<BankingTransaction> transactions = this.bankingTransactionService.getAllTransactionsByCustomer(customerId);
         List<List<String>> data = new java.util.ArrayList<>(Collections.emptyList());
         for (int i =0; i < transactions.size(); i++){
             BankingTransaction transaction = transactions.get(i);
@@ -76,7 +81,7 @@ public class BankingTransactionController {
                     transaction.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
             ));
         }
-        byte[] excelContent = excelService.generateExcelTransactions(fileHeaders, data);
+        byte[] excelContent = excelService.generatedExcelTransactions(fileHeaders, data);
         Customer customer = this.customerService.getById(customerId);
         String fileName = customer.getFirstName() + "_" +customer.getLastName() + "_transaction.xlsx";
         HttpHeaders headers = new HttpHeaders();

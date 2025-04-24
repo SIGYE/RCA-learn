@@ -1,0 +1,40 @@
+package com.practice.neBanking.standalone;
+
+import org.springframework.stereotype.Service;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.ss.usermodel.*;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.List;
+
+@Service
+public class ExcelService {
+    public byte[] generatedExcelTransactions(List<String> headers, List<List<String>> data) throws IOException {
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Transaction");
+
+        Row headerRow = sheet.createRow(0);
+        for (int i = 0; i < headers.size(); i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(headers.get(i));
+        }
+        for (int i = 0; i < data.size(); i++) {
+            Row row = sheet.createRow(i + 1);
+            List<String> rowData = data.get(i);
+            for (int j = 0; j < rowData.size(); j++) {
+                Cell cell = row.createCell(j);
+                cell.setCellValue(rowData.get(j));
+            }
+        }
+
+        for (int i = 0; i < headers.size(); i++) {
+            sheet.autoSizeColumn(i);
+        }
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        workbook.write(out);
+        workbook.close();
+        return out.toByteArray();
+    }
+}
