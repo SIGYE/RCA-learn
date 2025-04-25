@@ -1,16 +1,28 @@
 package com.practice.neBanking.config;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.practice.neBanking.payload.response.ApiResponse;
+import com.practice.neBanking.security.CustomUserDetailsService;
+import com.practice.neBanking.security.JwtAuthenticationEntryPoint;
+import com.practice.neBanking.security.JwtAuthenticationFilter;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -24,7 +36,7 @@ public class WebSecurity {
     }
 
     private final JwtAuthenticationEntryPoint authenticationEntryPoint;
-    private final CustomUserDetailsSevice userDetailsSevice;
+    private final CustomUserDetailsService userDetailsSevice;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
@@ -54,5 +66,25 @@ public class WebSecurity {
         authenticationProvider.setUserDetailsService(userDetailsSevice);
         authenticationProvider.setPasswordEncoder(passwordEncoder());
         return authenticationProvider;
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config)throws Exception{
+        return config.getAuthenticationManager();
+    }
+    @Bean
+    public AuthenticationEntryPoint authenticationErrorHandler(){
+        return (request, response, ex)->{
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            ServletOutputStream out = response.getOutputStream();
+            new ObjectMapper().writeValue(out, ApiResponse.error("You are not allowed to access this resource"));
+            out.flush();
+        };
     }
 }
