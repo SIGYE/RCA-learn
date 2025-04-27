@@ -16,7 +16,7 @@ public class FileStorageService {
     private String docsFolder;
 
     @Bean
-    public void init(){
-        
+    public void init() {
+
     }
 }

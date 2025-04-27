@@ -10,7 +10,10 @@ import java.util.UUID;
 
 public interface ICustomerService {
     Page<Customer> getAll(Pageable pageable);
-    Page<Customer> search(Pageable pageable,String searchKey);
+
+    Page<Customer> getALl(Pageable pageable);
+
+    Page<Customer> search(Pageable pageable, String searchKey);
 
     Customer getById(UUID id);
 
