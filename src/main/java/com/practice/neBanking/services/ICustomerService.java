@@ -11,8 +11,6 @@ import java.util.UUID;
 public interface ICustomerService {
     Page<Customer> getAll(Pageable pageable);
 
-    Page<Customer> getALl(Pageable pageable);
-
     Page<Customer> search(Pageable pageable, String searchKey);
 
     Customer getById(UUID id);
@@ -29,9 +27,9 @@ public interface ICustomerService {
 
     Customer getByEmail(String email);
 
-    Customer changeProfileImage(UUID id, File file);
-
-    Customer removeProfileImage(UUID id);
+//    Customer changeProfileImage(UUID id, File file);
+//
+//    Customer removeProfileImage(UUID id);
 
     Optional<Customer> findByActivationCode(String verificationCode);
 
