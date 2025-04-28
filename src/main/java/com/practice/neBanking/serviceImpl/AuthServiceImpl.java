@@ -83,7 +83,7 @@ public class AuthServiceImpl implements IAuthService {
     public void verifyAccount(String verificationCode){
         Optional<Customer> _user = this.customerService.findByActivationCode(verificationCode);
         if (_user.isEmpty()){
-            throw new ResourceNotFoundException("Customer", verificationCode,verificationCode);
+            throw new ResourceNotFoundException("Customer", "activationCode",verificationCode);
         }
         Customer user = _user.get();
         if (user.getActivationCodeExpiresAt().isBefore(LocalDateTime.now())) {
