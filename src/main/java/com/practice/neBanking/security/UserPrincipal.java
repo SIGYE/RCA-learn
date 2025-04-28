@@ -50,6 +50,8 @@ public class UserPrincipal implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities(){
         return authorities;
     }
+
+    public UUID getId(){return id;}
     @Override
     public String getPassword(){
         return password;

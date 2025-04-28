@@ -29,7 +29,7 @@ public class File {
     private String url;
 
     @Column(name = "size")
-    private String size;
+    private Long size;
 
     @Column(name = "size_type")
     @Enumerated(EnumType.STRING)
