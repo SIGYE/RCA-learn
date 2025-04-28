@@ -11,7 +11,12 @@ import com.practice.neBanking.services.IBankingTransactionService;
 import com.practice.neBanking.services.ICustomerService;
 import com.practice.neBanking.standalone.MailService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -55,7 +60,33 @@ public class BankingTransactionService implements IBankingTransactionService {
         transaction.setCustomer(customer);
 
         if (dto.getTransactionType() == ETransactionType.SAVING){
-            mailService.sendSavingsStoredSuccessfullyEmail();
+            mailService.sendSavingsStoredSuccessfullyEmail(customer.getEmail(), customer.getFullName(), dto.getAmount().toString(), String.valueOf(customer.getBalance()), customer.getAccount(), customer.getId());
+        } else if (dto.getTransactionType() == ETransactionType.WITHDRAW) {
+            mailService.sendWithdrawalSuccessfulEmail(customer.getEmail(), customer.getFullName(),dto.getAmount().toString(), String.valueOf(customer.getBalance()), customer.getAccount(), customer.getId());
+        } else if (dto.getTransactionType() == ETransactionType.TRANSFER) {
+            mailService.sendTransferSuccessfulEmail(customer.getEmail(), customer.getFullName(),dto.getAmount().toString(), String.valueOf(customer.getBalance()),transaction.getReceiver().getFullName(),customer.getAccount(), customer.getId());
+            mailService.sendReceivedAmountEmail(transaction.getReceiver().getEmail(), transaction.getReceiver().getFullName(), customer.getFullName(), dto.getAmount().toString(),String.valueOf(transaction.getReceiver().getBalance()));
         }
+        return this.bankingRepository.save(transaction);
+    }
+    @Override
+    public Page<BankingTransaction> getAllTransactions(Pageable pageable){
+        return this.bankingRepository.findAll(pageable);
+    }
+    @Override
+    public Page<BankingTransaction> getAllTransactionsByCustomer(Pageable pageable, UUID customerId){
+        return this.bankingRepository.findAllByCustomerId(pageable, customerId);
+    }
+    @Override
+    public Page<BankingTransaction> getAllTransactionsByType(Pageable pageable, ETransactionType type){
+        return this.bankingRepository.findAllByTransactionType(pageable, type);
+    }
+    @Override
+    public BankingTransaction getTransactionById(UUID id){
+        return this.bankingRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Transaction", "id", id.toString()));
+    }
+    @Override
+    public List<BankingTransaction> getAllTransactionsByCustomer(UUID customerId){
+        return this.bankingRepository.findAllByCustomerId(customerId);
     }
 }
