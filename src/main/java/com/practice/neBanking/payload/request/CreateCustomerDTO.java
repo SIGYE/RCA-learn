@@ -20,7 +20,7 @@ public class CreateCustomerDTO {
     private String mobile;
 
     @PastOrPresent(message = "Date of birth should be in the past")
-    @NotBlank(message = "Date of birth should not be blank")
+    @NotNull(message = "Date of birth should not be blank")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dob;
 

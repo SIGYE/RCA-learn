@@ -31,7 +31,7 @@ public class FileStorageService {
     private String docsFolder;
 
 
-    @Bean
+
     public void init() {
         try {
             Files.createDirectories(Paths.get(root, userProfilesFolder, docsFolder));

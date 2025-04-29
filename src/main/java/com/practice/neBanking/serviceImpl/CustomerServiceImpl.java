@@ -12,6 +12,7 @@ import com.practice.neBanking.services.IFileService;
 import com.practice.neBanking.standalone.FileStorageService;
 import com.practice.neBanking.utils.Utility;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,9 +26,15 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class CustomerServiceImpl implements ICustomerService {
+
     private ICustomerRepository userRepository;
     private IFileService fileService;
     private FileStorageService fileStorageService;
+    @Autowired
+    public CustomerServiceImpl(ICustomerRepository userRepository) {
+        this.userRepository = userRepository;
+
+    }
 
     @Override
     public Page<Customer> getAll(Pageable pageable){
@@ -115,5 +122,30 @@ public class CustomerServiceImpl implements ICustomerService {
     public Optional<Customer> findByAccountCode(String accountCode){
         return this.userRepository.findByAccount(accountCode);
     }
+
+//    @Override
+//    public Customer changeProfileImage(UUID id, File file) {
+//        Customer entity = this.userRepository.findById(id).orElseThrow(
+//                () -> new ResourceNotFoundException("Document", "id", id.toString()));
+//        File existingFile = entity.getProfileImage();
+//        if (existingFile != null) {
+//            this.fileStorageService.removeFileOnDisk(existingFile.getPath());
+//        }
+//        entity.setProfileImage(file);
+//        return this.userRepository.save(entity);
+//
+//    }
+//
+//    @Override
+//    public Customer removeProfileImage(UUID id) {
+//        Customer user = this.userRepository.findById(id).orElseThrow(
+//                () -> new ResourceNotFoundException("Customer", "id", id.toString()));
+//        File file = user.getProfileImage();
+//        if (file != null) {
+//            this.fileService.delete(file.getId());
+//        }
+//        user.setProfileImage(null);
+//        return this.userRepository.save(user);
+//    }
 
 }

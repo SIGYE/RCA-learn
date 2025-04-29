@@ -34,11 +34,11 @@ import java.util.UUID;
 @RequestMapping(path = "/api/v1/customers")
 @RequiredArgsConstructor
 public class CustomerController {
-    private ICustomerService customerService;
+    private final ICustomerService customerService;
     private static final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    private IRoleRepository roleRepository;
-    private IFileService fileService;
+    private final IRoleRepository roleRepository;
+    private final IFileService fileService;
 
     @Value("${uploads.directory.customer_profiles}")
     private String customerProfilesDirectory;
@@ -78,7 +78,7 @@ public class CustomerController {
         return ResponseEntity.ok(ApiResponse.success("Users fetched successfully", this.customerService.getById(id)));
     }
 
-    @PostMapping("/register")
+    @PostMapping(path = "/register")
     public ResponseEntity<ApiResponse> register(@RequestBody @Valid CreateCustomerDTO dto){
         Customer customer = new Customer();
         String encodedPassword = passwordEncoder.encode(dto.getPassword());
@@ -102,24 +102,24 @@ public class CustomerController {
         Customer entity = this.customerService.create(customer);
         return ResponseEntity.ok(ApiResponse.success("Customer created successfully", entity));
     }
-
-    @PutMapping(path = "/updated-profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse> uploadProfile(@RequestParam("file")MultipartFile document){
-        if(!Utility.isImageFile(document)){
-            throw new BadRequestException("Only images are allowed!");
-        }
-        Customer customer = this.customerService.getLoggedInCustomer();
-        File file = this.fileService.create(document, customerProfilesDirectory);
-        Customer updated = this.customerService.changeProfileImage(customer.getId(), file);
-        return ResponseEntity.ok(ApiResponse.success("Proile saved successfully", updated));
-    }
-
-    @PatchMapping(path = "/remove-profile")
-    public ResponseEntity<ApiResponse> removeProfile(){
-        Customer customer = this.customerService.getLoggedInCustomer();
-        Customer updated = this.customerService.removeProfileImage(customer.getId());
-        return ResponseEntity.ok(ApiResponse.success("Profile removed successfully", updated));
-    }
+//
+//    @PutMapping(path = "/updated-profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    public ResponseEntity<ApiResponse> uploadProfile(@RequestParam("file")MultipartFile document){
+//        if(!Utility.isImageFile(document)){
+//            throw new BadRequestException("Only images are allowed!");
+//        }
+//        Customer customer = this.customerService.getLoggedInCustomer();
+//        File file = this.fileService.create(document, customerProfilesDirectory);
+//        Customer updated = this.customerService.changeProfileImage(customer.getId(), file);
+//        return ResponseEntity.ok(ApiResponse.success("Proile saved successfully", updated));
+//    }
+//
+//    @PatchMapping(path = "/remove-profile")
+//    public ResponseEntity<ApiResponse> removeProfile(){
+//        Customer customer = this.customerService.getLoggedInCustomer();
+//        Customer updated = this.customerService.removeProfileImage(customer.getId());
+//        return ResponseEntity.ok(ApiResponse.success("Profile removed successfully", updated));
+//    }
 
     @DeleteMapping(path = "/delete")
     public  ResponseEntity<ApiResponse> deleteMyAccount(){

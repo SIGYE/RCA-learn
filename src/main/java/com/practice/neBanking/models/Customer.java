@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import java.io.File;
+import com.practice.neBanking.models.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;

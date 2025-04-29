@@ -27,9 +27,9 @@ public interface ICustomerService {
 
     Customer getByEmail(String email);
 
-    Customer changeProfileImage(UUID id, File file);
-
-    Customer removeProfileImage(UUID id);
+//    Customer changeProfileImage(UUID id, File file);
+//
+//    Customer removeProfileImage(UUID id);
 
     Optional<Customer> findByActivationCode(String verificationCode);
 

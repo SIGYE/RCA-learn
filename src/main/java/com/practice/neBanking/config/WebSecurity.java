@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -36,30 +37,46 @@ public class WebSecurity {
         return new JwtAuthenticationFilter();
     }
 
-    private final JwtAuthenticationEntryPoint authenticationEntryPoint;
-    private final CustomUserDetailsService userDetailsService;
+    private JwtAuthenticationEntryPoint authenticationEntryPoint;
+    private CustomUserDetailsService userDetailsService;
+
+
+    public WebSecurity(JwtAuthenticationEntryPoint authenticationEntryPoint,
+                       CustomUserDetailsService userDetailsService) {
+        this.authenticationEntryPoint = authenticationEntryPoint;
+        this.userDetailsService = userDetailsService;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable).authorizeHttpRequests(request ->
-                        request
-                                .requestMatchers(
-                                        "/api/v1/files/load-file/**",
-                                        "/api/v1/transactions/download/**"
-                                ).permitAll()
-                                .requestMatchers(
-                                        "/api/v1/auth/**",
-                                        "/api/v1//customers/register"
-                                ).permitAll()
-                                .requestMatchers(
-                                        "/v3/api-docs/**",
-                                        "/swagger-ui/**"
-                                ).permitAll()
-                                .anyRequest().authenticated())
-                .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider()).addFilterBefore(jwtAuthenticationFilter(),
-                        UsernamePasswordAuthenticationFilter.class);
-        http.exceptionHandling((exceptions) -> exceptions.authenticationEntryPoint(authenticationEntryPoint));
+        http
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth -> auth
+                        // Public endpoints
+                        .requestMatchers(
+                                "/api/v1/auth/**",
+                                "/api/v1/customers/register",
+                                "/api/v1/files/load-file/**",
+                                "/api/v1/transactions/download/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
+
+                        // Specific customer endpoints you want public
+                        .requestMatchers(HttpMethod.GET, "/api/v1/customers/all").permitAll()
+
+                        // All other customer endpoints require authentication
+                        .requestMatchers("/api/v1/customers/**").authenticated()
+
+                        .anyRequest().authenticated()
+                )
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 
