@@ -82,8 +82,12 @@ public class CustomerController {
     public ResponseEntity<ApiResponse> register(@RequestBody @Valid CreateCustomerDTO dto){
         Customer customer = new Customer();
         String encodedPassword = passwordEncoder.encode(dto.getPassword());
-        Role role = roleRepository.findByName(ERole.CUSTOMER).orElseThrow(
-                () -> new BadRequestException("Customer Role not set"));
+        ERole requestedRole = ERole.CUSTOMER;
+        if (dto.getRole() !=null && dto.getRole().equalsIgnoreCase("ADMIN")){
+            requestedRole = ERole.ADMIN;
+        }
+        Role role = roleRepository.findByName(requestedRole).orElseThrow(
+                () -> new BadRequestException("Role not set"));
         String accountCode;
 
         do{
@@ -93,7 +97,7 @@ public class CustomerController {
         customer.setFirstName(dto.getFirstName());
         customer.setLastName(dto.getLastName());
         customer.setMobile(dto.getMobile());
-        customer.setPassword(dto.getPassword());
+        customer.setPassword(encodedPassword);
         customer.setDob(dto.getDob());
         customer.setBalance(dto.getBalance());
         customer.setAccount(accountCode);

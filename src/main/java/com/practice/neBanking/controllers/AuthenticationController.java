@@ -11,7 +11,7 @@ import com.practice.neBanking.payload.request.*;
 import com.practice.neBanking.payload.response.*;
 
 @RestController
-@RequestMapping(path = "/api/neBanking/auth")
+@RequestMapping(path = "/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
 

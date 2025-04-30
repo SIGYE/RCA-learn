@@ -69,7 +69,7 @@ public class WebSecurity {
                         // All other customer endpoints require authentication
                         .requestMatchers("/api/v1/customers/**").authenticated()
 
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

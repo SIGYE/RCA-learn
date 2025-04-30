@@ -30,4 +30,7 @@ public class CreateCustomerDTO {
 
     @ValidPassword
     private String password;
+
+    @NotBlank
+    private String role;
 }
